@@ -36,4 +36,4 @@ The NumPy evaluator gave the same results as onnxruntime: probabilities differed
 
 ## Use of LLMs
 
-We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deploying troubleshoot. AI generated code has been reviewed prior to submission.
+We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deploying troubleshoot.  Claude code helped build the Gradio app, write tests to compare and fix render deployment. We made modeling and feature decisions ourselves while using AI to keep us better informed, such as comparing threshold options and running checks. AI generated code has been reviewed prior to submission.
