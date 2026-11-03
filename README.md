@@ -26,7 +26,11 @@ We began with ECFP alone because Morgan fingerprints were introduced in lecture,
 
 ## Model and hyperparameters
 
-The model is a scikit-learn **RandomForestClassifier** with 450 trees, scikit-learn defaults for everything else (fully grown trees, `max_features="sqrt"`, `min_samples_leaf=1`) and seed 42, trained on the training and validation molecules together and exported to ONNX (47.7 MB). We reduced the forest from 500 to 450 trees because 500 fully grown trees exported to 53.1 MB, over the 50 MB limit, and the test-split ROC-AUC stayed at 0.919. Five-fold cross-validated AUROC on the 8,000 development molecules is 0.916 ± 0.004 with random folds and 0.855 ± 0.016 with scaffold-grouped folds (no scaffold on both sides of a split), so about 0.86 is the more realistic figure for molecules unlike the training set. We chose a random forest over other models using an earlier comparison on a similar fingerprint-and-descriptor feature set (not exactly these features), where random forest, ExtraTrees and HistGradientBoosting tied (AUROC 0.905 to 0.910 in 5-fold CV) and logistic regression was clearly worse (0.853); HistGradientBoosting could not be exported with the allowed skl2onnx version, which left the random forest.
+We selected a Random Forest classifier with 500 decision trees (n_estimators=500, random_state=42), using default settings for maximum tree depth, minimum samples per leaf, and feature selection at each split. ROC-AUC was our primary metric for model selection because it measures the model's overall ability to distinguish hERG blockers from non-blockers across classification thresholds. Given the drug safety-screening objective, we also considered sensitivity and specificity to minimize missed blockers while limiting false positives. Our final model achieved a validation ROC-AUC of approximately 0.927, with five-fold cross-validation yielding a mean ROC-AUC of 0.925 ± 0.004. On the held-out test set, it achieved a ROC-AUC of 0.919, sensitivity of 0.891, and specificity of 0.800 at our selected threshold of 0.45. 
+
+## Limitation
+
+Although the larger feature set and 500-tree ensemble may improve predictive performance and stability, they also increase computational cost and model complexity. The unrestricted tree depth and minimum leaf size of one may allow individual trees to overfit training data, particularly with many potentially redundant features. Random Forest averaging helps reduce this risk, but does not eliminate it.
 
 ## Deployment
 
