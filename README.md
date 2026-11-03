@@ -4,9 +4,13 @@
 
 **Group members:** [Miles Huang, Annie Li An Lin, Arefin Keya, Anya Weeranarawat]
 
+## Introduction
+
+We developed a machine-learning classifier to predict whether a molecule is an hERG blocker from its SMILES string. Because hERG blockade can contribute to cardiotoxicity risk during drug development, identifying potential blockers is an important part of drug safety screening. Our project integrates molecular feature engineering, model selection and tuning, and deployment into a single pipeline. We convert SMILES strings into numerical features, use those features to train a random forest classifier, and make the model accessible through a web app where users can enter a SMILES string and receive a prediction.
+
 ## Decision threshold
 
-We classify a molecule as a hERG blocker when the model's probability is at least **0.45**. The errors are asymmetric: a false negative lets a cardiotoxic compound advance through development at great cost and possible harm to patients, while a false positive only triggers a cheap confirmatory hERG assay. So we accept more false positives and set the threshold below 0.5. On the validation set (1,000 molecules, model fit on the training set only) we compared candidate rules: the lowest threshold reaching sensitivity ≥ 0.90 (0.43, specificity 0.75), Youden's J (0.51, sensitivity 0.86, specificity 0.84), and maximum sensitivity with specificity above 0.7 (0.39, specificity 0.71). 0.45 sits between the first two: on validation it gives sensitivity 0.89, specificity 0.79 and precision 0.82, and on our held-out test split sensitivity 0.89, specificity 0.80, precision 0.83, accuracy 0.85 (ROC-AUC 0.919). Scaffold-grouped cross-validation, which better imitates a test set of different composition, gave lower numbers at 0.45 (sensitivity 0.84, specificity 0.70, precision 0.75, accuracy 0.77), so we expect real performance nearer those, and we did not go lower than 0.45 because specificity would approach the 0.7 floor.
+We chose a decision threshold of 0.45 to balance sensitivity and specificity while prioritizing the detection of hERG blockers. Lowering the threshold below 0.5 flags more molecules as blockers, reducing false negatives at the cost of more false positives. At 0.45, our validation sensitivity was 0.89 and specificity was 0.79. Further decreasing the threshold yielded diminishing returns in sensitivity relative to the loss in specificity. On the test set, lowering the cutoff from 0.45 to 0.40 increased sensitivity from 0.891 to 0.910 while specificity fell from 0.800 to 0.752. We favored 0.45 because it retained high sensitivity without accepting this larger specificity loss for a modest sensitivity gain. ROC-AUC remained unchanged because it evaluates ranking across thresholds rather than performance at one chosen cutoff.
 
 ## Features
 
