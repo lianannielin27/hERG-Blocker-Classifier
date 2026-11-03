@@ -28,6 +28,12 @@ We began with ECFP alone because Morgan fingerprints were introduced in lecture,
 
 The model is a scikit-learn **RandomForestClassifier** with 450 trees, scikit-learn defaults for everything else (fully grown trees, `max_features="sqrt"`, `min_samples_leaf=1`) and seed 42, trained on the training and validation molecules together and exported to ONNX (47.7 MB). We reduced the forest from 500 to 450 trees because 500 fully grown trees exported to 53.1 MB, over the 50 MB limit, and the test-split ROC-AUC stayed at 0.919. Five-fold cross-validated AUROC on the 8,000 development molecules is 0.916 ± 0.004 with random folds and 0.855 ± 0.016 with scaffold-grouped folds (no scaffold on both sides of a split), so about 0.86 is the more realistic figure for molecules unlike the training set. We chose a random forest over other models using an earlier comparison on a similar fingerprint-and-descriptor feature set (not exactly these features), where random forest, ExtraTrees and HistGradientBoosting tied (AUROC 0.905 to 0.910 in 5-fold CV) and logistic regression was clearly worse (0.853); HistGradientBoosting could not be exported with the allowed skl2onnx version, which left the random forest.
 
+## Deployment
+
+Our initial model had 500 trees but exported to 53.1 MB, over the 50 MB cap, so we cut the forest to 450 trees, bringing the file to 47.7 MB.
+Render’s free tier allows 512 MB of RAM, and onnxruntime alone used about 415 MB to load the forest, leaving too little room for Gradio and RDKit. We replaced onnxruntime with a small NumPy tree evaluator (light_onnx.py in Part 2) that reads the same .onnx file.
+The NumPy evaluator gave the same results as onnxruntime: probabilities differed by at most 2.4e-6 across 4,004 molecules, and no labels changed at the 0.45 threshold.
+
 ## Use of LLMs
 
-We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deploying. AI generated code has been reviewed prior to submission.
+We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deploying troubleshoot. AI generated code has been reviewed prior to submission.
