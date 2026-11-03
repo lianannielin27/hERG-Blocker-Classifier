@@ -1,8 +1,8 @@
 # 203_HW1 — hERG blocker classifier
 
-**Web app:** https://herg-blocker-predictor.onrender.com/ (hosted on Render; the free tier sleeps when idle, so the first load after a quiet period can take about a minute)
+**Web app:** https://herg-blocker-predictor.onrender.com/ (hosted on Render)
 
-**Group members:** [ADD FULL NAMES: Annie ___, Anya ___, Arefin ___, Miles ___]
+**Group members:** [Miles Huang, Annie Li An Lin, Arefin Keya, Anya Weeranarawat]
 
 ## Decision threshold
 
