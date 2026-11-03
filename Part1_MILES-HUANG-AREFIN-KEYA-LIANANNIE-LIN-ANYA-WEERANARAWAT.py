@@ -71,6 +71,8 @@ def featurize(smiles):
 
     def fingerprint(smiles):
         mol = Chem.MolFromSmiles(smiles)
+        if mol is None:  # unparseable SMILES -> all-zero vector instead of crashing
+            return np.zeros(2048 + 1024 + 1024 + 10 + 167, dtype=np.float32)
 
         ecfp = ecfp_generator.GetFingerprintAsNumPy(mol).astype(np.float32)
         fcfp = fcfp_generator.GetFingerprintAsNumPy(mol).astype(np.float32)

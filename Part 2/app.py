@@ -1,7 +1,7 @@
 """
 hERG blocker predictor - Gradio web app (Homework 1, Part 2).
 
-Loads the submitted ONNX model and runs the exact same featurize() as the training script
+Evaluates the submitted ONNX model (via light_onnx.py) and runs the exact same featurize() as the training script
 (submission_features.py holds the same featurize() code as the training script, copied next to this file).
 """
 
@@ -10,9 +10,9 @@ from pathlib import Path
 
 import gradio as gr
 import numpy as np
-import onnxruntime as ort
 from rdkit import Chem, RDLogger
 
+from light_onnx import TreeForest
 from submission_features import featurize
 
 RDLogger.DisableLog("rdApp.*")
@@ -21,8 +21,9 @@ HERE = Path(__file__).resolve().parent
 MODEL_PATH = HERE / "Part1_MILES-HUANG-AREFIN-KEYA-LIANANNIE-LIN-ANYA-WEERANARAWAT.onnx"
 THRESHOLD = 0.45  # must equal THRESHOLD in Part1_MILES-HUANG-AREFIN-KEYA-LIANANNIE-LIN-ANYA-WEERANARAWAT.py (checked by the parity test)
 
-_session = ort.InferenceSession(str(MODEL_PATH), providers=["CPUExecutionProvider"])
-_input_name = _session.get_inputs()[0].name
+# Reads the submitted .onnx file directly (onnxruntime needs ~415 MB for this 47.7 MB forest, more than
+# Render's 512 MB free tier allows next to Gradio and RDKit). Same probabilities as onnxruntime to ~1e-6.
+_forest = TreeForest(str(MODEL_PATH))
 
 
 def is_valid(smiles):
@@ -36,7 +37,7 @@ def is_valid(smiles):
 def predict_proba(smiles):
     """P(hERG blocker) for one SMILES string, straight from the ONNX model."""
     features = featurize([smiles.strip()])
-    return float(_session.run(None, {_input_name: features})[-1][0, 1])
+    return float(_forest.predict_proba(features)[0, 1])
 
 
 def predict(smiles):
