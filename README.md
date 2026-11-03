@@ -14,14 +14,14 @@ We chose a decision threshold of 0.45 to balance sensitivity and specificity whi
 
 ## Features
 
-We seleceted features incrementally based on their ability to improve ROC-AUC and PR-AUC while trying to preserve the highest sensitivity, recall, precision, and accuracy. Each SMILES string is converted into a fixed-length numerical representation using several complmentary RDKIT features:
-- 2,048-bit ECFP4 (Morgan) fingerprints: capture local atomic environements around each atoms out to a radius of two bonds and encodes those substructures into a fixed-length fingerprint 
-- 1,024-bit FCFP fingerprint: represents atoms by functional chemical properties to provide a complementary view of the moelcule's functional group in each atom's local neighborhood
-- 1,024 atom-pair fingerprint: consideres the topological distances between each atom-pair, providing information on chemical feature arrangement
+We selected features incrementally based on their ability to improve ROC-AUC and PR-AUC while preserving the highest sensitivity, recall, precision, and accuracy. Each SMILES string is converted into a fixed-length numerical representation using several complementary RDKit features:
+- 2,048-bit ECFP4 (Morgan) fingerprints: capture local atomic environments around each atom out to a radius of two bonds and encode those substructures into a fixed-length fingerprint 
+- 1,024-bit FCFP fingerprint: represents atoms by functional chemical properties to provide a complementary view of the molecule's functional group in each atom's local neighborhood
+- 1,024 atom-pair fingerprint: considers the topological distances between each atom pair, providing information on chemical feature arrangement
 - molecular descriptors: a summary of 10 global physicochemical properties including molecular size, lipophilicity, etc.
-- MACCs strucutral keys: encodes whether a predefined set of chemical structural patterns are present or absent
+- MACCs structural keys: encode whether a predefined set of chemical structural patterns are present or absent
 
-We began with ECFP alone because Morgan fingerprints were introduced in lecture, then tested the other feature groups incrementally and retained features when they improved validation performance. The different representations were intended to provide complementary information: ECFP and FCFP describe local molecular environments, atom-pair fingerprints describe relationships across the molecular graph, MACCS keys identify known structural patterns, and molecular descriptors summarize whole-molecule properties. The combined feature set improved validation ROC-AUC from approximately 0.906 with ECFP alone to 0.927 and PR-AUC from 0.914 to 0.936. Five-fold stratified cross-validation produced a mean ROC-AUC of 0.925 ± 0.004 and mean PR-AUC of 0.933 ± 0.003, suggesting that the improvement was consistent across different data splits.
+We began with ECFP alone because Morgan fingerprints were introduced in the lecture, then tested the other feature groups incrementally, retaining features when they improved validation performance. The different representations were intended to provide complementary information: ECFP and FCFP describe local molecular environments; atom-pair fingerprints describe relationships across the molecular graph; MACCS keys identify known structural patterns; and molecular descriptors summarize whole-molecule properties. The combined feature set improved validation ROC-AUC from approximately 0.906 with ECFP alone to 0.927 and PR-AUC from 0.914 to 0.936. Fivefold stratified cross-validation yielded a mean ROC-AUC of 0.925 ± 0.004 and a mean PR-AUC of 0.933 ± 0.003, indicating that the improvement was consistent across data splits.
 
 
 ## Model and hyperparameters
@@ -30,7 +30,7 @@ We selected a Random Forest classifier with 500 decision trees (n_estimators=500
 
 ## Limitation
 
-Although the larger feature set and 500-tree ensemble may improve predictive performance and stability, they also increase computational cost and model complexity. The unrestricted tree depth and minimum leaf size of one may allow individual trees to overfit training data, particularly with many potentially redundant features. Random Forest averaging helps reduce this risk, but does not eliminate it.
+Although the larger feature set and 500-tree ensemble may improve predictive performance and stability, they also increase computational cost and model complexity. The unrestricted tree depth and a minimum leaf size of 1 may allow individual trees to overfit the training data, particularly with many potentially redundant features. Random Forest averaging helps reduce this risk, but does not eliminate it.
 
 ## Deployment
 
@@ -39,4 +39,4 @@ The NumPy evaluator gave the same results as onnxruntime: probabilities differed
 
 ## Use of LLMs
 
-We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deploying troubleshoot.  Claude code helped build the Gradio app, write tests to compare and fix render deployment. We made modeling and feature decisions ourselves while using AI to keep us better informed, such as comparing threshold options and running checks. AI generated code has been reviewed prior to submission.
+We used Claude Code and ChatGPT Enterprise to help with code revision, debugging, and deployment troubleshooting.  Claude Code helped build the Gradio app and write tests to compare and fix render deployment issues. We made modeling and feature decisions ourselves while using AI to keep us better informed, for example, by comparing threshold options and running checks. AI-generated code has been reviewed prior to submission.
