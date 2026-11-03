@@ -30,4 +30,4 @@ The model is a scikit-learn **RandomForestClassifier** with 450 trees, scikit-le
 
 ## Use of LLMs
 
-[CONFIRM AND EDIT] We used Claude Code (Anthropic) to help with this project: it built the Gradio web app and the app-versus-ONNX parity test, ran the cross-validation, scaffold-split and threshold analyses quoted above, diagnosed and fixed the ONNX size problem (500 to 450 trees), and drafted this README. [State here what the team did yourselves: who wrote the featurization and model code, what you reviewed, which experiments you reran, and that you checked every number in this README against the logs.]
+We used Claude Code (Anthropic) to help with this project: it built the Gradio web app and the app-versus-ONNX parity test, ran the cross-validation, scaffold-split and threshold analyses quoted above, diagnosed and fixed the ONNX size problem (500 to 450 trees), and drafted this README. [State here what the team did yourselves: who wrote the featurization and model code, what you reviewed, which experiments you reran, and that you checked every number in this README against the logs.]
