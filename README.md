@@ -30,7 +30,6 @@ The model is a scikit-learn **RandomForestClassifier** with 450 trees, scikit-le
 
 ## Deployment
 
-Our initial model had 500 trees but exported to 53.1 MB, over the 50 MB cap, so we cut the forest to 450 trees, bringing the file to 47.7 MB.
 Render’s free tier allows 512 MB of RAM, and onnxruntime alone used about 415 MB to load the forest, leaving too little room for Gradio and RDKit. We replaced onnxruntime with a small NumPy tree evaluator (light_onnx.py in Part 2) that reads the same .onnx file.
 The NumPy evaluator gave the same results as onnxruntime: probabilities differed by at most 2.4e-6 across 4,004 molecules, and no labels changed at the 0.45 threshold.
 
