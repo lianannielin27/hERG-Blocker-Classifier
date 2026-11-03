@@ -2,7 +2,7 @@
 
 **Web app:** https://herg-blocker-predictor.onrender.com/ (hosted on Render)
 
-**Group members:** [Miles Huang, Annie Li An Lin, Arefin Keya, Anya Weeranarawat]
+**Group members:** [Miles Huang, Li An Annie Lin, Arefin Keya, Anya Weeranarawat]
 
 ## Introduction
 
@@ -14,7 +14,15 @@ We chose a decision threshold of 0.45 to balance sensitivity and specificity whi
 
 ## Features
 
-Each molecule's SMILES is parsed with RDKit and turned into a fixed-length vector of 4,273 values, so SMILES of any length work. The vector concatenates 2,048-bit Morgan ECFP4 fingerprints (radius 2, local substructures and scaffold diversity), 1,024-bit FCFP fingerprints (Morgan with atoms abstracted to functional roles such as donor, acceptor, aromatic and charged, so similar amines look alike across chemotypes), 1,024-bit atom-pair fingerprints (pairs of atoms and the bond distance between them, which capture overall shape and spacing), ten RDKit descriptors (molecular weight, logP, TPSA, molar refractivity, hydrogen-bond donors and acceptors, rotatable bonds, ring count, fraction of sp3 carbons and heavy-atom count, covering the lipophilicity, bulk and flexibility associated with hERG binding), and the 167 MACCS structural keys. We did not run ChemBERTa embeddings.
+We seleceted features incrementally based on their ability to improve ROC-AUC and PR-AUC while trying to preserve the highest sensitivity, recall, precision, and accuracy. Each SMILES string is converted into a fixed-length numerical representation using several complmentary RDKIT features:
+- 2,048-bit ECFP4 (Morgan) fingerprints: capture local atomic environements around each atoms out to a radius of two bonds and encodes those substructures into a fixed-length fingerprint 
+- 1,024-bit FCFP fingerprint: represents atoms by functional chemical properties to provide a complementary view of the moelcule's functional group in each atom's local neighborhood
+- 1,024 atom-pair fingerprint: consideres the topological distances between each atom-pair, providing information on chemical feature arrangement
+- molecular descriptors: a summary of 10 global physicochemical properties including molecular size, lipophilicity, etc.
+- MACCs strucutral keys: encodes whether a predefined set of chemical structural patterns are present or absent
+
+We began with ECFP alone because Morgan fingerprints were introduced in lecture, then tested the other feature groups incrementally and retained features when they improved validation performance. The different representations were intended to provide complementary information: ECFP and FCFP describe local molecular environments, atom-pair fingerprints describe relationships across the molecular graph, MACCS keys identify known structural patterns, and molecular descriptors summarize whole-molecule properties. The combined feature set improved validation ROC-AUC from approximately 0.906 with ECFP alone to 0.927 and PR-AUC from 0.914 to 0.936. Five-fold stratified cross-validation produced a mean ROC-AUC of 0.925 ± 0.004 and mean PR-AUC of 0.933 ± 0.003, suggesting that the improvement was consistent across different data splits.
+
 
 ## Model and hyperparameters
 
