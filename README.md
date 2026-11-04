@@ -26,11 +26,11 @@ We began with ECFP alone because Morgan fingerprints were introduced in the lect
 
 ## Model and hyperparameters
 
-We selected a Random Forest classifier with 500 decision trees (n_estimators=500, random_state=42), using default settings for maximum tree depth, minimum samples per leaf, and feature selection at each split. ROC-AUC was our primary metric for model selection because it measures the model's overall ability to distinguish hERG blockers from non-blockers across classification thresholds. Given the drug safety-screening objective, we also considered sensitivity and specificity to minimize missed blockers while limiting false positives. Our final model achieved a validation ROC-AUC of approximately 0.927, with five-fold cross-validation yielding a mean ROC-AUC of 0.925 ± 0.004. On the held-out test set, it achieved a ROC-AUC of 0.919, sensitivity of 0.891, and specificity of 0.800 at our selected threshold of 0.45. 
+We selected a Random Forest classifier with 450 decision trees using default settings for maximum tree depth, minimum samples per leaf, and feature selection at each split. ROC-AUC was our primary metric for model selection because it measures the model's overall ability to distinguish hERG blockers from non-blockers across classification thresholds. Given the drug safety-screening objective, we also considered sensitivity and specificity to minimize missed blockers while limiting false positives. On the held-out test set, our model achieved a ROC-AUC of 0.919, sensitivity of 0.891, and specificity of 0.800 at our selected threshold of 0.45. 
 
 ## Limitation
 
-Although the larger feature set and 500-tree ensemble may improve predictive performance and stability, they also increase computational cost and model complexity. The unrestricted tree depth and a minimum leaf size of 1 may allow individual trees to overfit the training data, particularly with many potentially redundant features. Random Forest averaging helps reduce this risk, but does not eliminate it.
+Our model uses over 4,000 features for 8,000 molecules, providing more molecular information but potentially adding noise and overfitting risk. Random Forests help limit this risk by considering only a subset of features at each split. Also, compared with another promising model using 200 trees with slightly lower performance, our 450-tree model may require more prediction time and storage space.
 
 ## Deployment
 
